@@ -1,0 +1,105 @@
+import pygame
+from pygame.locals import *
+
+pygame.init()
+
+platums = 600
+augstums = 500
+
+fpspulkst = pygame.time.Clock()
+mala = 50
+font = pygame.font.SysFont("arial", 35)
+cpu_score = 0
+speletajs_score = 0
+fps = 60
+balta_krasa = (255, 255, 255)
+winner = 0
+ekrans = pygame.display.set_mode((platums, augstums))
+pygame.display.set_caption("Pong")
+
+bg = (200, 0, 90)
+
+def texts(text, font, krasa, x, y):
+    img = font.render(text, True, krasa)
+    ekrans.blit(img, (x, y))
+
+def aizmugure():
+    ekrans.fill(bg)
+    pygame.draw.line(ekrans, balta_krasa, (0, mala), (platums, mala))
+
+class nujas():
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.width = 20
+        self.height = 100
+        self.rect = Rect(self.x, self.y, self.width, self.height)
+        self.speed = 5
+
+    def move(self):
+        key = pygame.key.get_pressed()
+        if key[pygame.K_w] and self.rect.top > mala:
+            self.rect.move_ip(0, -1 * self.speed)
+        if key[pygame.K_s] and self.rect.bottom < augstums:
+            self.rect.move_ip(0, self.speed)
+
+    def draw(self):
+        pygame.draw.rect(ekrans, balta_krasa, self.rect)
+
+class bumba():
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.radius = 10
+        self.rect = Rect(self.x, self.y, self.radius * 2, self.radius * 2)
+        self.speed_x = -4
+        self.speed_y = 4
+        self.winner = 0
+
+    def move(self):
+        if self.rect.top <= mala or self.rect.bottom >= augstums:
+            self.speed_y *= -1
+
+        # Check if ball went out of bounds on the left side (player lost)
+        if self.rect.left <= 0:
+            self.winner = 1
+        # Check if ball went out of bounds on the right side (CPU lost)
+        elif self.rect.right >= platums:
+            self.winner = -1
+
+        self.rect.x += self.speed_x
+        self.rect.y += self.speed_y
+
+        return self.winner
+
+    def draw(self):
+        pygame.draw.circle(ekrans, balta_krasa, (self.rect.x + self.radius, self.rect.y + self.radius), self.radius)
+
+
+
+speletaja_nuja = nujas(platums - 40, augstums // 2)
+cpu_nuja = nujas(20, augstums // 2)
+
+pong = bumba(platums - 60, augstums // 2 + 50)
+
+run = True
+while run:
+    fpspulkst.tick(fps)
+    aizmugure()
+    texts("cpu:" + str(cpu_score), font, balta_krasa, 20, 10)
+    texts("speletajs:" + str(speletajs_score), font, balta_krasa, 400, 10)
+    speletaja_nuja.draw()
+    cpu_nuja.draw()
+    pong.draw()
+    winner = pong.move()
+    print(winner)
+    speletaja_nuja.move()
+
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+    pygame.display.update()
+
+pygame.quit()

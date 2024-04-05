@@ -1,0 +1,192 @@
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+import time
+
+
+options = webdriver.ChromeOptions()
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
+
+
+webdriver_service = Service(ChromeDriverManager().install())
+
+driver = webdriver.Chrome(service=webdriver_service, options=options)
+
+url = "https://orteil.dashnet.org/cookieclicker/"
+driver.get(url)
+time.sleep(1)
+
+consent_button = driver.find_element(By.XPATH, "/html/body/div[3]/div[2]/div[1]/div[2]/div[2]/button[1]")
+consent_button.click()
+
+english = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div[12]/div/div[1]/div[1]/div[2]")
+english.click()
+
+def balt():
+    spid = driver.find_element(By.XPATH, "//*[@id='product0']")
+    spid.click()
+
+
+source = driver.page_source
+soup = BeautifulSoup(source, "html.parser")
+
+
+def remove_comma(integer_string):
+    try:
+        return int(integer_string.replace(",", ""))
+    except:
+        punkts = (integer_string.replace(".", ""))
+        return int(punkts.replace(" million", "000000"))
+
+
+
+def daudzuma():
+    source = driver.page_source
+    soup = BeautifulSoup(source, "html.parser")
+    daudz = int(remove_comma(soup.find(id="cookies").text.split()[0]))
+    click_maksa = int(remove_comma(soup.find(id="productPrice0").text))
+    vec_maksa = int(remove_comma(soup.find(id="productPrice1").text))
+    farm_maksa = int(remove_comma(soup.find(id="productPrice2").text))
+    rakt_maksa = int(remove_comma(soup.find(id="productPrice3").text))
+    rupnica_maksa = int(remove_comma(soup.find(id="productPrice4").text))
+    
+    return daudz, click_maksa, vec_maksa, farm_maksa, rakt_maksa, rupnica_maksa
+
+cookie = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div[15]/div[8]/button")
+
+
+daudz = int(remove_comma(soup.find(id="cookies").text.split()[0]))
+
+for x in range(150):
+    
+    cookie.click()
+balt()
+time.sleep(1)
+bbb = driver.find_element(By.XPATH, "//*[@id='upgrade0']")
+bbb.click()
+j = 0
+while j < 500:
+    cookie.click()
+    j += 2
+    print("kada")
+
+time.sleep(1)
+bbb = driver.find_element(By.XPATH, "//*[@id='upgrade0']")
+bbb.click()
+
+_reizes =driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div[19]/div[3]/div[6]/div[1]/div[4]")
+_reizes.click()
+k = 0
+while k < 10500:
+    cookie.click()
+    k += 4
+    print(k)
+k = 0
+
+balt()
+time.sleep(1)
+bbb = driver.find_element(By.XPATH, "//*[@id='upgrade0']")
+bbb.click()
+
+viensx = driver.find_element(By.XPATH,'/html/body/div[2]/div[2]/div[19]/div[3]/div[6]/div[1]/div[3]')
+viensx.click()
+while k < 50000:
+    cookie.click()
+    k += 8
+    print(k)
+
+time.sleep(1)
+bbb = driver.find_element(By.XPATH, "//*[@id='upgrade0']")
+bbb.click()
+
+rupnica = driver.find_element(By.XPATH, "//*[@id='product4']")
+rakt = driver.find_element(By.XPATH, "//*[@id='product3']")
+farm = driver.find_element(By.XPATH, "//*[@id='product2']")
+vec_skaits = driver.find_element(By.XPATH, "//*[@id='product1']")
+vec_skaits.click()
+
+
+for x in range(250):
+     cookie.click()
+time.sleep(1)
+bbb = driver.find_element(By.XPATH, "//*[@id='upgrade0']")
+bbb.click()
+
+
+daudz, click_maksa, vec_maksa, farm_maksa, rakt_maksa, rupnica_maksa = daudzuma()
+
+
+for h in range (30):
+    
+    for x in range(300):
+        cookie.click()
+    daudz = daudzuma()[0]
+    
+    bbb = driver.find_element(By.XPATH, "//*[@id='upgrade0']")
+    bbb.click()
+    try:
+        gold_cookie = driver.find_element(By.XPATH,"/html/body/div[2]/div[2]/div[5]")
+        gold_cookie.click()
+        
+    except:
+        if daudz > rupnica_maksa:
+            rupnica.click()
+            rupnica_maksa = daudzuma()[5]
+        if daudz > rakt_maksa:
+            rakt.click()
+            rakt_maksa = daudzuma()[4]
+        if daudz > farm_maksa:
+            farm.click()
+            farm.click()
+            farm_maksa = daudzuma()[3]
+        if daudz > vec_maksa: 
+            vec_skaits = driver.find_element(By.XPATH, "//*[@id='product1']")
+            print(vec_maksa, daudz)
+            vec_skaits.click() 
+            vec_skaits.click() 
+            vec_maksa = daudzuma()[2]
+        if daudz > click_maksa:
+            balt()
+            balt()
+            click_maksa = daudzuma()[1]
+        
+    print(h)
+    print(h)
+print(daudz) 
+time.sleep(10)
+
+for c in range (4000):
+    
+    for x in range(1000):
+        cookie.click()
+    daudz, click_maksa, vec_maksa, farm_maksa, rakt_maksa, rupnica_maksa = daudzuma()
+    
+    bbb = driver.find_element(By.XPATH, "//*[@id='upgrade0']")
+    bbb.click()
+    
+    if daudz > rupnica_maksa:
+        rupnica.click()
+    if daudz > rakt_maksa:
+        rakt.click()
+        rakt_maksa = daudzuma()[4]
+    if daudz > farm_maksa:
+        farm.click()
+        farm.click()
+    if daudz > vec_maksa: 
+        vec_skaits = driver.find_element(By.XPATH, "//*[@id='product1']")
+        print(vec_maksa, daudz)
+        vec_skaits.click()   
+    if daudz > click_maksa:
+        balt()
+    print(c)
+    print(" 2 loop")
+    
+    
+    
+
+

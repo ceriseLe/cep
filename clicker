@@ -1,0 +1,14 @@
+import pyautogui
+import keyboard
+
+# Set the cookie's coordinates (replace with your actual coordinates)
+cookie_position = (310, 460)  # Change this to your cookie's position
+
+print("Press and hold 'H' to click the cookie. Press 'Ctrl+C' to stop.")
+
+try:
+    while True:
+        if keyboard.is_pressed('h'):
+            pyautogui.click(x=cookie_position[0], y=cookie_position[1])
+except KeyboardInterrupt:
+    print("Stopped.")

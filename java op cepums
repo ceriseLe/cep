@@ -1,0 +1,97 @@
+var checkInterval = 1000;
+var autoclicker = setInterval(function() {
+  Game.lastClick -= 1000;
+  document.getElementById("bigCookie").click();
+}, 1);
+
+
+var autoclickerGoldenCookie = setInterval(function() {
+    var shimmers = document.getElementsByClassName("shimmer");
+    for (var i = 0; i < shimmers.length; i++) {
+        if(shimmers[i].style.backgroundImage.includes('goldCookie')) {
+            shimmers[i].click();
+        }
+    }
+}, checkInterval);
+
+
+var autobuyerUpgrades = setInterval(function() {
+    var upgrades = document.getElementById("upgrades").getElementsByClassName("crate upgrade");
+    for (var i = 0; i < upgrades.length; i++) {
+        if (upgrades[i].classList.contains("enabled")) {
+            upgrades[i].click(); // Clicks on the first available and affordable upgrade
+            return; // Stop checking further if an upgrade is bought
+        }
+    }
+}, checkInterval);
+
+
+var buyingBuildings = true;
+var autobuyerBuildings = setInterval(function() {
+    if (buyingBuildings) {
+        var buildings = document.getElementById("products").getElementsByClassName("product");
+        for (var i = buildings.length - 1; i >= 0; i--) {
+            if (buildings[i].classList.contains("enabled")) {
+                buildings[i].click(); // Clicks on the most expensive affordable building
+                break; // Stops after buying one building to give chance for more upgrades next interval
+            }
+        }
+    }
+}, checkInterval);
+
+
+var isRunning = true;
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'ArrowDown') {
+        isRunning = !isRunning;
+        toggleAutoClickers(isRunning);
+    } else if (event.key === 'ArrowUp') {
+        buyingBuildings = !buyingBuildings;
+    }
+});
+
+
+function toggleAutoClickers(activate) {
+    if (!activate) {
+        clearInterval(autoclicker);
+        clearInterval(autoclickerGoldenCookie);
+        clearInterval(autobuyerUpgrades);
+        clearInterval(autobuyerBuildings);
+    } else {
+        autoclicker = setInterval(function() {
+            Game.lastClick -= 1000;
+            document.getElementById("bigCookie").click();
+        }, 1);
+
+        autoclickerGoldenCookie = setInterval(function() {
+            var shimmers = document.getElementsByClassName("shimmer");
+            for (var i = 0; i < shimmers.length; i++) {
+                if(shimmers[i].style.backgroundImage.includes('goldCookie')) {
+                    shimmers[i].click();
+                }
+            }
+        }, checkInterval);
+
+        autobuyerUpgrades = setInterval(function() {
+            var upgrades = document.getElementById("upgrades").getElementsByClassName("crate upgrade");
+            for (var i = 0; i < upgrades.length; i++) {
+                if (upgrades[i].classList.contains("enabled")) {
+                    upgrades[i].click();
+                    return;
+                }
+            }
+        }, checkInterval);
+
+        autobuyerBuildings = setInterval(function() {
+            if (buyingBuildings) {
+                var buildings = document.getElementById("products").getElementsByClassName("product");
+                for (var i = buildings.length - 1; i >= 0; i--) {
+                    if (buildings[i].classList.contains("enabled")) {
+                        buildings[i].click();
+                        break;
+                    }
+                }
+            }
+        }, checkInterval);
+    }
+}

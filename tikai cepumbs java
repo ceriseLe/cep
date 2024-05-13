@@ -1,0 +1,11 @@
+clearInterval(autoclickerGoldenCookie);
+
+
+var autoclickerGoldenCookie = setInterval(function() {
+    var shimmers = document.getElementsByClassName("shimmer");
+    for (var i = 0; i < shimmers.length; i++) {
+        if(shimmers[i].style.backgroundImage.includes('goldCookie')) {
+            shimmers[i].click();
+        }
+    }
+}, 1000);
